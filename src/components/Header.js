@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import iconProfile from '../images/profileIcon.svg';
 import iconSearch from '../images/searchIcon.svg';
+import SearchBar from './SearchBar';
 
 export default function Header({ title }) {
   const history = useHistory();
+  const [searchRender, setSearchRender] = useState(false);
   const { pathname } = history.location;
   return (
     <div>
@@ -39,9 +41,14 @@ export default function Header({ title }) {
               type="image"
               src={ iconSearch }
               data-testid="search-top-btn"
-              onClick={ () => console.log('clicou na pesquisa') }
+              onClick={ () => (
+                searchRender ? setSearchRender(false) : setSearchRender(true)
+              ) }
               alt="search-top-btn"
             />
+            {
+              searchRender && <SearchBar />
+            }
           </>)}
     </div>
   );
