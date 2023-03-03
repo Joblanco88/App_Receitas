@@ -21,6 +21,8 @@ describe('Testando o component Header', () => {
     const title = screen.getByTestId('page-title');
     expect(searchButton).not.toBeInTheDocument();
     expect(title).toBeInTheDocument();
+    const { location: { pathname } } = history;
+    expect(pathname).toBe('/profile');
   });
 
   test('Se o botão do profile envia o usuario para a pag profile ', () => {
@@ -35,14 +37,29 @@ describe('Testando o component Header', () => {
     expect(pathname).toBe('/profile');
   });
 
-  // test('Quando entra na page Meals nao tem o input de busca', () => {
-  //   renderWithRouter(<Meals />);
+  test('Quando entra na page Meals nao tem o input de busca', () => {
+    renderWithRouter(<Meals />);
 
-  //   const searchButton = screen.getByTestId('search-input');
-  //   const inputSearch = screen.getByRole('textbox');
-  //   expect(inputSearch).not.toBeInTheDocument();
+    const searchButton = screen.getByTestId(SEARCH_BUTTON);
+    userEvent.click(searchButton);
+    const searchInput = screen.getByTestId('search-input');
+    expect(searchInput).toBeInTheDocument();
+    userEvent.click(searchButton);
+    expect(searchInput).not.toBeInTheDocument();
+  });
 
-  //   userEvent.click(searchButton);
-  //   expect(SEARCH_BAR).toBeInTheDocument();
-  // });
+  test('Teste se o ícone de profile funciona como esperado na page DoneRecipes', () => {
+    const { history } = renderWithRouter(<App />);
+
+    act(() => {
+      history.push('/done-recipes');
+    });
+
+    const buttonProfile = screen.getByRole('button', {
+      name: /profile/i,
+    });
+    userEvent.click(buttonProfile);
+    const { location: { pathname } } = history;
+    expect(pathname).toBe('/profile');
+  });
 });

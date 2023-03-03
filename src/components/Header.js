@@ -26,7 +26,7 @@ export default function Header({ title }) {
             src={ iconProfile }
             data-testid="profile-top-btn"
             onClick={ () => history.push('/profile') }
-            alt="profile-top-btn"
+            alt="profile"
           />)
         : (
           <>
