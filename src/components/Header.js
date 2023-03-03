@@ -47,7 +47,7 @@ export default function Header({ title }) {
               alt="search-top-btn"
             />
             {
-              searchRender && <SearchBar />
+              searchRender && <SearchBar pageTitle={ title } />
             }
           </>)}
     </div>
