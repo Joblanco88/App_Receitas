@@ -3,12 +3,12 @@ import React, { useState, useMemo } from 'react';
 import RecipesContext from './RecipesContext';
 
 export default function RecipesProvider({ children }) {
-  const [stateDefault, setStateDefault] = useState('');
+  const [recipes, setRecipes] = useState([]);
 
   const context = useMemo(() => ({
-    stateDefault,
-    setStateDefault,
-  }), [stateDefault]);
+    recipes,
+    setRecipes,
+  }), [recipes]);
 
   return (
     <RecipesContext.Provider value={ context }>
