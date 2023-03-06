@@ -2,7 +2,6 @@ import React from 'react';
 import { screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 // import Profile from '../pages/Profile';
-import Meals from '../pages/Meals';
 // import Header from '../components/Header';
 import { renderWithRouter } from '../helpers/renderWith';
 import App from '../App';
@@ -26,7 +25,11 @@ describe('Testando o component Header', () => {
   });
 
   test('Se o botão do profile envia o usuario para a pag profile ', () => {
-    const { history } = renderWithRouter(<Meals />);
+    const { history } = renderWithRouter(<App />);
+
+    act(() => {
+      history.push('/meals');
+    });
 
     const button = screen.getByTestId('profile-top-btn');
     const searchButton = screen.getByTestId(SEARCH_BUTTON);
@@ -38,7 +41,11 @@ describe('Testando o component Header', () => {
   });
 
   test('Quando entra na page Meals nao tem o input de busca', () => {
-    renderWithRouter(<Meals />);
+    const { history } = renderWithRouter(<App />);
+
+    act(() => {
+      history.push('/meals');
+    });
 
     const searchButton = screen.getByTestId(SEARCH_BUTTON);
     userEvent.click(searchButton);
