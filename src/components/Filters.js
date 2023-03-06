@@ -12,6 +12,7 @@ import RecipesContext from '../context/RecipesContext';
 
 export default function Filters({ title }) {
   const [fetchCategories, setFetchCategories] = useState([]);
+  const [toggleCategory, setToggleCategory] = useState(false);
   const { setRecipes } = useContext(RecipesContext);
   const MAX_FILTERS = 5;
 
@@ -32,20 +33,6 @@ export default function Filters({ title }) {
     categoriesMap();
   }, []);
 
-  const filterResultAPI = async (param, pageTitle) => {
-    // recebe o title como props (meals/drinks)
-    if (pageTitle === 'Meals') {
-      const responseMeal = await categoryMealsFetch(param);
-      setRecipes(responseMeal);
-      return true;
-    }
-    if (pageTitle === 'Drinks') {
-      const responseDrink = await categoryDrinksFetch(param);
-      setRecipes(responseDrink);
-      return true;
-    }
-  };
-
   const clearAllFilters = async (pageTitle) => {
     // seta o estado recipe com o resultado do fetch que traz todas as receitas
     if (pageTitle === 'Meals') {
@@ -60,11 +47,41 @@ export default function Filters({ title }) {
     }
   };
 
+  const filterByCategory = async (param, pageTitle) => {
+    setToggleCategory(param);
+    // recebe o title como props (meals/drinks)
+    if (pageTitle === 'Meals') {
+      const responseMeal = await categoryMealsFetch(param);
+      setRecipes(responseMeal);
+      return true;
+    }
+    if (pageTitle === 'Drinks') {
+      const responseDrink = await categoryDrinksFetch(param);
+      setRecipes(responseDrink);
+      return true;
+    }
+  };
+
+  const filterResultAPI = (param, pageTitle) => {
+    const typeToggle = typeof toggleCategory;
+    if (toggleCategory === false) {
+      filterByCategory(param, pageTitle);
+    } else if (toggleCategory === param) {
+      setToggleCategory(false);
+      clearAllFilters(pageTitle);
+    } else if (typeToggle === 'string' && toggleCategory !== param) {
+      filterByCategory(param, pageTitle);
+    }
+  };
+
   return (
     <div>
       <button
         data-testid="All-category-filter"
-        onClick={ () => clearAllFilters(title) }
+        onClick={ () => {
+          setToggleCategory(false);
+          clearAllFilters(title);
+        } }
       >
         All
       </button>
