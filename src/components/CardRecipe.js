@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
 import RecipesContext from '../context/RecipesContext';
 
 export default function CardRecipe() {
@@ -11,31 +12,40 @@ export default function CardRecipe() {
     <div>
       {Object.keys(recipes)[0] === 'meals'
         ? mealsSlice?.map((recipe, index) => (
-          <div
-            data-testid={ `${index}-recipe-card` }
-            className="card"
+          <Link
+            to={ `/meals/${recipe.idMeal}` }
             key={ index }
           >
-            <span data-testid={ `${index}-card-name` }>{recipe.strMeal}</span>
-            <img
-              data-testid={ `${index}-card-img` }
-              src={ recipe.strMealThumb }
-              alt={ index }
-            />
-          </div>))
+            <div
+              data-testid={ `${index}-recipe-card` }
+              className="card"
+              key={ index }
+            >
+              <span data-testid={ `${index}-card-name` }>{recipe.strMeal}</span>
+              <img
+                data-testid={ `${index}-card-img` }
+                src={ recipe.strMealThumb }
+                alt={ index }
+              />
+            </div>
+          </Link>))
         : drinksSlice?.map((recipe, index) => (
-          <div
-            data-testid={ `${index}-recipe-card` }
-            className="card"
+          <Link
+            to={ `/drinks/${recipe.idDrink}` }
             key={ index }
           >
-            <span data-testid={ `${index}-card-name` }>{recipe.strDrink}</span>
-            <img
-              src={ recipe.strDrinkThumb }
-              alt={ index }
-              data-testid={ `${index}-card-img` }
-            />
-          </div>
+            <div
+              data-testid={ `${index}-recipe-card` }
+              className="card"
+            >
+              <span data-testid={ `${index}-card-name` }>{recipe.strDrink}</span>
+              <img
+                src={ recipe.strDrinkThumb }
+                alt={ index }
+                data-testid={ `${index}-card-img` }
+              />
+            </div>
+          </Link>
         ))}
     </div>
   );
