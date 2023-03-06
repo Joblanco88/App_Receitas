@@ -15,14 +15,22 @@ export default function SearchBar(pageTitle) {
   const ALERT = 'Your search must have only 1 (one) character';
 
   const apiMealHandler = async (apiConst) => {
-    if (apiConst.meals.length === 1) {
+    if (apiConst.meals?.length === 1) {
       history.push(`/meals/${apiConst.meals[0].idMeal}`);
+    } else if (apiConst.meals === null) {
+      global.alert(
+        'Sorry, we haven\'t found any recipes for these filters.',
+      );
     } else setRecipes(apiConst);
   };
 
   const apiDrinkHandler = async (apiConst) => {
-    if (apiConst.drinks.length === 1) {
+    if (apiConst.drinks?.length === 1) {
       history.push(`/drinks/${apiConst.drinks[0].idDrink}`);
+    } else if (apiConst.drinks === null) {
+      global.alert(
+        'Sorry, we haven\'t found any recipes for these filters.',
+      );
     } else setRecipes(apiConst);
   };
 
