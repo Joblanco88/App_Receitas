@@ -1,9 +1,32 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import '../styles/CardDetails.css';
 
 export default function CardDetails(recipeId) {
   const { params: { title, thumb, category,
     ingredient, measure, instruction, video } } = recipeId;
+  const history = useHistory();
+  const { location: { pathname } } = history;
+  const SLICE_EIGHT = 8;
+  const SLICE_SEVEN = 7;
+
+  const setRecipeStorage = () => {
+    const object = JSON.parse(localStorage.getItem('inProgressRecipes'));
+    console.log(object);
+    const drinkRegex = /drinks/;
+    const mealRegex = /meals/;
+    if (drinkRegex.test(pathname)) {
+      const id = pathname.slice(SLICE_EIGHT);
+      object.drinks[id] = [...ingredient];
+      console.log(object);
+    } if (mealRegex.test(pathname)) {
+      const id = pathname.slice(SLICE_SEVEN);
+      object.meals[id] = [...ingredient];
+      console.log(object);
+    }
+    localStorage.setItem('drinks', object);
+  };
+
   return (
     <div>
       {/* titulo */}
@@ -56,7 +79,7 @@ export default function CardDetails(recipeId) {
       <button
         className="buttonStartRecipe"
         type="button"
-        onClick={ () => console.log('botão start recipe') }
+        onClick={ () => setRecipeStorage() }
         data-testid="start-recipe-btn"
       >
         Start Recipe
