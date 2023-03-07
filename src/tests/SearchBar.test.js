@@ -3,19 +3,18 @@ import { screen, act, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithRouter } from '../helpers/renderWith';
 import App from '../App';
-// import emptyDrinks from '../../cypress/mocks/emptyDrinks';
 
 describe('Testando SearchBar', () => {
-  // beforeEach(() => {
-  //   global.fetch = jest.fn(async () => ({
-  //     json: async () => emptyDrinks,
-  //   }));
-  // });
+  beforeEach(() => {
+    global.alert = jest.fn();
+  });
 
   const SEARCH_BUTTON = 'exec-search-btn';
   const SEARCH_INPUT = 'search-input';
   const TOGGLE_SEARCH = 'search-top-btn';
   const RADIO_NAME = 'name-search-radio';
+  const RADIO_LETTER = 'first-letter-search-radio';
+
   test('Testando pesquisa atraves de ingrediente na pagina meals', async () => {
     const { history } = renderWithRouter(<App />);
     act(() => {
@@ -110,7 +109,6 @@ describe('Testando SearchBar', () => {
   });
   test('', async () => {
     const { history } = renderWithRouter(<App />);
-    const spy = jest.spyOn(global, 'alert');
     act(() => {
       history.push('/meals');
     });
@@ -126,14 +124,11 @@ describe('Testando SearchBar', () => {
     userEvent.click(radioName);
     userEvent.click(searchButton);
     await waitFor(() => {
-      expect(spy).toHaveBeenCalled();
-
-      spy.mockRestore();
+      expect(global.alert).toHaveBeenCalledTimes(1);
     });
   });
   test('', async () => {
     const { history } = renderWithRouter(<App />);
-    const spy = jest.spyOn(global, 'alert');
     act(() => {
       history.push('/drinks');
     });
@@ -149,9 +144,71 @@ describe('Testando SearchBar', () => {
     userEvent.click(radioName);
     userEvent.click(searchButton);
     await waitFor(() => {
-      expect(spy).toHaveBeenCalled();
+      expect(global.alert).toHaveBeenCalledTimes(1);
+    });
+  });
 
-      spy.mockRestore();
+  test('', async () => {
+    const { history } = renderWithRouter(<App />);
+    act(() => {
+      history.push('/meals');
+    });
+    const toggleSearch = screen.getByTestId(TOGGLE_SEARCH);
+    userEvent.click(toggleSearch);
+
+    const searchButton = screen.getByTestId(SEARCH_BUTTON);
+    const searchInput = screen.getByTestId(SEARCH_INPUT);
+    const radioLetter = screen.getByTestId(RADIO_LETTER);
+
+    userEvent.type(searchInput, 'aaa');
+    userEvent.click(radioLetter);
+    userEvent.click(searchButton);
+
+    await waitFor(() => {
+      expect(global.alert).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  test('', async () => {
+    const { history } = renderWithRouter(<App />);
+    act(() => {
+      history.push('/drinks');
+    });
+    const toggleSearch = screen.getByTestId(TOGGLE_SEARCH);
+    userEvent.click(toggleSearch);
+
+    const searchButton = screen.getByTestId(SEARCH_BUTTON);
+    const searchInput = screen.getByTestId(SEARCH_INPUT);
+    const radioLetter = screen.getByTestId(RADIO_LETTER);
+
+    userEvent.type(searchInput, 'aaa');
+    userEvent.click(radioLetter);
+    userEvent.click(searchButton);
+
+    await waitFor(() => {
+      expect(global.alert).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  test('', async () => {
+    const { history } = renderWithRouter(<App />);
+    act(() => {
+      history.push('/meals');
+    });
+    const toggleSearch = screen.getByTestId(TOGGLE_SEARCH);
+    userEvent.click(toggleSearch);
+
+    const searchButton = screen.getByTestId(SEARCH_BUTTON);
+    const searchInput = screen.getByTestId(SEARCH_INPUT);
+    const radioLetter = screen.getByTestId(RADIO_LETTER);
+
+    userEvent.type(searchInput, 'a');
+    userEvent.click(radioLetter);
+    userEvent.click(searchButton);
+
+    await waitFor(() => {
+      const filteredByLetter = screen.getByText(/apple frangipan tart/i);
+      expect(filteredByLetter).toBeInTheDocument();
     });
   });
 });
