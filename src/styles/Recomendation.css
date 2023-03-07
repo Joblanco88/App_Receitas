@@ -1,0 +1,13 @@
+.imageCarousel {
+  display: flex;
+  height: 300px;
+  margin-bottom: 50px;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  white-space: nowrap;
+  width: 200px;
+}
+
+img {
+  width: 200px;
+}

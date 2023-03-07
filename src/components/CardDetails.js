@@ -1,4 +1,5 @@
 import React from 'react';
+import '../styles/CardDetails.css';
 
 export default function CardDetails(recipeId) {
   const { params: { title, thumb, category,
@@ -52,6 +53,14 @@ export default function CardDetails(recipeId) {
           src={ video }
         />
       </div>
+      <button
+        className="buttonStartRecipe"
+        type="button"
+        onClick={ () => console.log('botão start recipe') }
+        data-testid="start-recipe-btn"
+      >
+        Start Recipe
+      </button>
     </div>
   );
 }
