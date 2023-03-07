@@ -3,7 +3,6 @@ import React from 'react';
 export default function CardDetails(recipeId) {
   const { params: { title, thumb, category,
     ingredient, measure, instruction, video } } = recipeId;
-  console.log(ingredient);
   return (
     <div>
       {/* titulo */}

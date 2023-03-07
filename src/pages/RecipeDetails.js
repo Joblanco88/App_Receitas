@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { idDrinkFetch, idMealFetch } from '../helpers/services/fetchAPI';
 import CardDetails from '../components/CardDetails';
+import Recomendation from '../components/Recomendation';
 
 export default function RecipeDetails({ match }) {
   const { params: { id } } = match;
@@ -68,6 +69,7 @@ export default function RecipeDetails({ match }) {
   return (
     <div>
       <CardDetails params={ recipeId } />
+      <Recomendation path={ path } />
     </div>
   );
 }
