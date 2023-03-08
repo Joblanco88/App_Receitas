@@ -1,18 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import '../styles/CardDetails.css';
 import copy from 'clipboard-copy';
 import iconFavorite from '../images/whiteHeartIcon.svg';
 import iconShare from '../images/shareIcon.svg';
 import { saveLocalStorage } from '../helpers/saveLocalStorage';
+import RecipesContext from '../context/RecipesContext';
 
 export default function CardDetails(recipeId) {
   const { params: { title, thumb, category,
     ingredient, measure, instruction, video } } = recipeId;
+  const { dataDetails } = useContext(RecipesContext);
   const [startedRecipe, setStartedRecipe] = useState(false);
   const [msgUrlCopied, setMsgUrlCopied] = useState(false);
   const history = useHistory();
   const { location: { pathname } } = history;
+  const SECONDS_TIMEOUT = 2000;
   const SLICE_EIGHT = 8;
   const SLICE_SEVEN = 7;
   const DRINK_REGEX = /drinks/;
@@ -59,24 +62,26 @@ export default function CardDetails(recipeId) {
     const inProgress = JSON.parse(localStorage.getItem('inProgressRecipes'));
     if (!inProgress) {
       saveLocalStorage('inProgressRecipes', { drinks: {}, meals: {} });
+      saveLocalStorage('favoriteRecipes', []);
     }
   }, []);
 
   const onClickFavorite = () => {
     console.log('favoritar receita');
-    // const objFavorites = {
-    //   id: 'a',
-    //   type: '',
-    //   nationality: '',
-    //   category: { category },
-    //   alcoholicOrNot: '',
-    //   name: { title },
-    //   image: { thumb },
-    // };
+    const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
+    const { id, type, nationality, alcoholicOrNot, name, image } = dataDetails;
+    const objFavorites = [...favoriteRecipes, {
+      id,
+      type,
+      nationality,
+      category: dataDetails.category,
+      alcoholicOrNot,
+      name,
+      image }];
+    saveLocalStorage('favoriteRecipes', objFavorites);
   };
 
   const onCLickShare = () => {
-    const SECONDS_TIMEOUT = 2000;
     copy(URL);
     setMsgUrlCopied(true);
     setTimeout(() => {
