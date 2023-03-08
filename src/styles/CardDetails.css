@@ -2,3 +2,14 @@
   bottom: 0;
   position: fixed;
 }
+
+.containerIcons {
+  display: flex;
+  flex-direction: column;
+  width: 50px;
+}
+
+.icons {
+  height: 20px;
+  width: 20px;
+}

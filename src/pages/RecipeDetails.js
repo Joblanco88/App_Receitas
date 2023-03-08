@@ -56,7 +56,8 @@ export default function RecipeDetails({ match }) {
           thumb: objectApi.strDrinkThumb,
           title: objectApi.strDrink,
           category: objectApi.strAlcoholic,
-          ingredient: Object.values(ingredients).filter((value) => value !== ''),
+          ingredient: Object.values(ingredients)
+            .filter((value) => value !== '' && value !== null),
           measure: Object.values(measures).filter((value) => value !== ''),
           instruction: objectApi.strInstructions,
           video: objectApi.strVideo,
