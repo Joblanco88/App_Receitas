@@ -25,13 +25,21 @@ function App() {
           path="/meals/:id"
           render={ (props) => <RecipeDetails { ...props } /> }
         />
-        <Route exact path="/meals/:id/in-progress" component={ RecipeInProgress } />
+        <Route
+          exact
+          path="/meals/:id/in-progress"
+          render={ (props) => <RecipeInProgress { ...props } /> }
+        />
         <Route
           exact
           path="/drinks/:id"
           render={ (props) => <RecipeDetails { ...props } /> }
         />
-        <Route exact path="/drinks/:id/in-progress" component={ RecipeInProgress } />
+        <Route
+          exact
+          path="/drinks/:id/in-progress"
+          render={ (props) => <RecipeInProgress { ...props } /> }
+        />
         <Route exact path="/done-recipes" component={ DoneRecipes } />
         <Route exact path="/favorite-recipes" component={ FavoriteRecipes } />
       </Switch>

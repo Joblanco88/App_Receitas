@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import '../styles/CardDetails.css';
 import copy from 'clipboard-copy';
-import { saveLocalStorage } from '../helpers/saveLocalStorage';
-import iconFavorite from '../images/blackHeartIcon.svg';
+import iconFavorite from '../images/whiteHeartIcon.svg';
 import iconShare from '../images/shareIcon.svg';
+import { saveLocalStorage } from '../helpers/saveLocalStorage';
 
 export default function CardDetails(recipeId) {
   const { params: { title, thumb, category,
@@ -23,13 +23,14 @@ export default function CardDetails(recipeId) {
 
   const setRecipeStorage = () => {
     const object = JSON.parse(localStorage.getItem('inProgressRecipes'));
+    console.log(object);
     if (DRINK_REGEX.test(pathname) && object) {
       object.drinks[ID_DRINK] = [...ingredient];
-      saveLocalStorage('inProgressRecipes', object);
+      // saveLocalStorage('inProgressRecipes', object);
       history.push(`/drinks/${ID_DRINK}/in-progress`);
-    } if (MEAL_REGEX.test(pathname) && object) {
+    } else if (MEAL_REGEX.test(pathname) && object) {
       object.meals[ID_MEAL] = [...ingredient];
-      saveLocalStorage('inProgressRecipes', object);
+      // saveLocalStorage('inProgressRecipes', object);
       history.push(`/meals/${ID_MEAL}/in-progress`);
     }
   };
@@ -54,8 +55,24 @@ export default function CardDetails(recipeId) {
     }
   }, [recipeId]);
 
+  useEffect(() => {
+    const inProgress = JSON.parse(localStorage.getItem('inProgressRecipes'));
+    if (!inProgress) {
+      saveLocalStorage('inProgressRecipes', { drinks: {}, meals: {} });
+    }
+  }, []);
+
   const onClickFavorite = () => {
     console.log('favoritar receita');
+    // const objFavorites = {
+    //   id: '',
+    //   type: '',
+    //   nationality: '',
+    //   category: { category },
+    //   alcoholicOrNot: '',
+    //   name: { title },
+    //   image: { thumb },
+    // };
   };
 
   const onCLickShare = () => {

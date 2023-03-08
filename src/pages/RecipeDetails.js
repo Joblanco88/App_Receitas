@@ -69,7 +69,9 @@ export default function RecipeDetails({ match }) {
   }, []);
   return (
     <div>
-      <CardDetails params={ recipeId } />
+      <CardDetails
+        params={ recipeId }
+      />
       <Recomendation path={ path } />
     </div>
   );
