@@ -65,7 +65,7 @@ export default function CardDetails(recipeId) {
   const onClickFavorite = () => {
     console.log('favoritar receita');
     // const objFavorites = {
-    //   id: '',
+    //   id: 'a',
     //   type: '',
     //   nationality: '',
     //   category: { category },
