@@ -41,6 +41,9 @@ export default function Login() {
         onClick={ () => {
           history.push('/meals');
           saveLocalStorage('user', { email });
+          saveLocalStorage('doneRecipes', [{}]);
+          saveLocalStorage('favoriteRecipes', [{}]);
+          saveLocalStorage('inProgressRecipes', { drinks: {}, meals: {} });
         } }
         disabled={ !disable }
       >
