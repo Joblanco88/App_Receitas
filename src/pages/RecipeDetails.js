@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { idDrinkFetch, idMealFetch } from '../helpers/services/fetchAPI';
 import CardDetails from '../components/CardDetails';
@@ -6,19 +6,10 @@ import Recomendation from '../components/Recomendation';
 import RecipesContext from '../context/RecipesContext';
 
 export default function RecipeDetails({ match }) {
-  const { setDataDetails } = useContext(RecipesContext);
+  const { setDataDetails, recipeId, setRecipeId } = useContext(RecipesContext);
   const { params: { id } } = match;
   const { path } = match;
-  const stateDefault = {
-    thumb: '',
-    title: '',
-    category: '',
-    ingredient: [''],
-    measure: [''],
-    instruction: '',
-    video: '',
-  };
-  const [recipeId, setRecipeId] = useState(stateDefault);
+
   const PARAM_INGREDIENT = /strIngredient\d+/;
   const PARAM_MEASURE = /strMeasure\d+/;
 
@@ -67,7 +58,6 @@ export default function RecipeDetails({ match }) {
       if (path === '/meals/:id') {
         const response = await idMealFetch(id);
         const objectApi = response.meals[0];
-        console.log(objectApi);
         setDataDetails(createObjectDetails(objectApi, true));
         const ingredients = filterKeys(objectApi, PARAM_INGREDIENT);
         const measures = filterKeys(objectApi, PARAM_MEASURE);
@@ -84,7 +74,6 @@ export default function RecipeDetails({ match }) {
       } else if (path === '/drinks/:id') {
         const response = await idDrinkFetch(id);
         const objectApi = response.drinks[0];
-        console.log(objectApi);
         setDataDetails(createObjectDetails(objectApi, false));
         const ingredients = filterKeys(objectApi, PARAM_INGREDIENT);
         const measures = filterKeys(objectApi, PARAM_MEASURE);
