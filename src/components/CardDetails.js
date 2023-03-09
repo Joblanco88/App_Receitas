@@ -1,36 +1,39 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import '../styles/CardDetails.css';
 import copy from 'clipboard-copy';
-import { saveLocalStorage } from '../helpers/saveLocalStorage';
-import iconFavorite from '../images/blackHeartIcon.svg';
+import whiteHeartIcon from '../images/whiteHeartIcon.svg';
+import blackHeartIcon from '../images/blackHeartIcon.svg';
 import iconShare from '../images/shareIcon.svg';
+import { saveLocalStorage } from '../helpers/saveLocalStorage';
+import RecipesContext from '../context/RecipesContext';
 
 export default function CardDetails(recipeId) {
   const { params: { title, thumb, category,
     ingredient, measure, instruction, video } } = recipeId;
+  const { dataDetails } = useContext(RecipesContext);
   const [startedRecipe, setStartedRecipe] = useState(false);
   const [msgUrlCopied, setMsgUrlCopied] = useState(false);
+  const [favorited, setFavorited] = useState(whiteHeartIcon);
   const history = useHistory();
   const { location: { pathname } } = history;
-  const SLICE_EIGHT = 8;
-  const SLICE_SEVEN = 7;
+  const SECONDS_TIMEOUT = 2000;
+  const idSplit = pathname.split('/').pop();
   const DRINK_REGEX = /drinks/;
   const MEAL_REGEX = /meals/;
-  const ID_DRINK = pathname.slice(SLICE_EIGHT);
-  const ID_MEAL = pathname.slice(SLICE_SEVEN);
   const URL = window.location.href;
+  let favoriteRecipes = [];
 
   const setRecipeStorage = () => {
     const object = JSON.parse(localStorage.getItem('inProgressRecipes'));
     if (DRINK_REGEX.test(pathname) && object) {
-      object.drinks[ID_DRINK] = [...ingredient];
-      saveLocalStorage('inProgressRecipes', object);
-      history.push(`/drinks/${ID_DRINK}/in-progress`);
-    } if (MEAL_REGEX.test(pathname) && object) {
-      object.meals[ID_MEAL] = [...ingredient];
-      saveLocalStorage('inProgressRecipes', object);
-      history.push(`/meals/${ID_MEAL}/in-progress`);
+      object.drinks[idSplit] = [...ingredient];
+      // saveLocalStorage('inProgressRecipes', object);
+      history.push(`/drinks/${idSplit}/in-progress`);
+    } else if (MEAL_REGEX.test(pathname) && object) {
+      object.meals[idSplit] = [...ingredient];
+      // saveLocalStorage('inProgressRecipes', object);
+      history.push(`/meals/${idSplit}/in-progress`);
     }
   };
 
@@ -38,7 +41,7 @@ export default function CardDetails(recipeId) {
     const inProgress = JSON.parse(localStorage.getItem('inProgressRecipes'));
     if (inProgress && inProgress.drinks) {
       const keyDrinks = Object.keys(inProgress.drinks);
-      if (keyDrinks.includes(ID_DRINK)) {
+      if (keyDrinks.includes(idSplit)) {
         setStartedRecipe(true);
       } else {
         setStartedRecipe(false);
@@ -46,7 +49,7 @@ export default function CardDetails(recipeId) {
     }
     if (inProgress && inProgress.meals) {
       const keyMeals = Object.keys(inProgress.meals);
-      if (keyMeals.includes(ID_MEAL)) {
+      if (keyMeals.includes(idSplit)) {
         setStartedRecipe(true);
       } else {
         setStartedRecipe(false);
@@ -54,12 +57,47 @@ export default function CardDetails(recipeId) {
     }
   }, [recipeId]);
 
+  useEffect(() => {
+    const favoriteStorage = JSON.parse(localStorage.getItem('favoriteRecipes'));
+    const inProgress = JSON.parse(localStorage.getItem('inProgressRecipes'));
+    if (!inProgress) {
+      saveLocalStorage('inProgressRecipes', { drinks: {}, meals: {} });
+      // saveLocalStorage('favoriteRecipes', []);
+    }
+    if (!favoriteStorage) {
+      saveLocalStorage('favoriteRecipes', []);
+    }
+    favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
+    console.log(favoriteRecipes, 'Favoritos');
+    const includes = favoriteRecipes && favoriteRecipes.filter((recipe) => (
+      recipe.id.includes(idSplit)));
+    setFavorited(includes && includes.length === 1 ? blackHeartIcon : whiteHeartIcon);
+  }, []);
+
   const onClickFavorite = () => {
-    console.log('favoritar receita');
+    favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
+    const { id, type, nationality, alcoholicOrNot, name, image } = dataDetails;
+    const objFavorites = [...favoriteRecipes, {
+      id,
+      type,
+      nationality,
+      category: dataDetails.category,
+      alcoholicOrNot,
+      name,
+      image }];
+    const includes = favoriteRecipes.filter((recipe) => (
+      recipe.id.includes(idSplit)));
+    if (includes.length === 0) {
+      saveLocalStorage('favoriteRecipes', objFavorites);
+      setFavorited(blackHeartIcon);
+    } else {
+      const array = favoriteRecipes.filter((recipe) => (!recipe.id.includes(id)));
+      saveLocalStorage('favoriteRecipes', array);
+      setFavorited(whiteHeartIcon);
+    }
   };
 
   const onCLickShare = () => {
-    const SECONDS_TIMEOUT = 2000;
     copy(URL);
     setMsgUrlCopied(true);
     setTimeout(() => {
@@ -84,13 +122,13 @@ export default function CardDetails(recipeId) {
         className="containerIcons"
       >
         <button
-          data-testid="favorite-btn"
           onClick={ () => onClickFavorite() }
         >
           <img
             className="icons"
-            src={ iconFavorite }
+            src={ favorited }
             alt="iconFavorite"
+            data-testid="favorite-btn"
           />
 
         </button>
