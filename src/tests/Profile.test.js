@@ -47,4 +47,24 @@ describe('testando a pagina de Profile', () => {
     const { location: { pathname } } = history;
     expect(pathname).toBe('/done-recipes');
   });
+  test('Testa se o email aparece na tela', () => {
+    const { history } = renderWithRouter(<App />);
+
+    const button = screen.getByTestId('login-submit-btn');
+    const inputEmail = screen.getByTestId('email-input');
+    const inputPassword = screen.getByTestId('password-input');
+
+    userEvent.type(inputEmail, 'teste@teste.com');
+    userEvent.type(inputPassword, '1234567');
+
+    userEvent.click(button);
+
+    act(() => {
+      history.push('/profile');
+    });
+
+    const emailMsg = screen.getByText(/teste@teste\.com/i);
+
+    expect(emailMsg).toBeInTheDocument();
+  });
 });

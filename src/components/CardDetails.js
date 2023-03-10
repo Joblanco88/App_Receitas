@@ -5,7 +5,7 @@ import copy from 'clipboard-copy';
 import whiteHeartIcon from '../images/whiteHeartIcon.svg';
 import blackHeartIcon from '../images/blackHeartIcon.svg';
 import iconShare from '../images/shareIcon.svg';
-import { saveLocalStorage } from '../helpers/saveLocalStorage';
+import { saveLocalStorage, getLocalStorage } from '../helpers/saveLocalStorage';
 import RecipesContext from '../context/RecipesContext';
 
 export default function CardDetails(recipeId) {
@@ -25,7 +25,7 @@ export default function CardDetails(recipeId) {
   let favoriteRecipes = [];
 
   const setRecipeStorage = () => {
-    const object = JSON.parse(localStorage.getItem('inProgressRecipes'));
+    const object = getLocalStorage('inProgressRecipes');
     if (DRINK_REGEX.test(pathname) && object) {
       object.drinks[idSplit] = [...ingredient];
       // saveLocalStorage('inProgressRecipes', object);
@@ -38,7 +38,7 @@ export default function CardDetails(recipeId) {
   };
 
   useEffect(() => {
-    const inProgress = JSON.parse(localStorage.getItem('inProgressRecipes'));
+    const inProgress = getLocalStorage('inProgressRecipes');
     if (inProgress && inProgress.drinks) {
       const keyDrinks = Object.keys(inProgress.drinks);
       if (keyDrinks.includes(idSplit)) {
@@ -58,8 +58,8 @@ export default function CardDetails(recipeId) {
   }, [recipeId]);
 
   useEffect(() => {
-    const favoriteStorage = JSON.parse(localStorage.getItem('favoriteRecipes'));
-    const inProgress = JSON.parse(localStorage.getItem('inProgressRecipes'));
+    const favoriteStorage = getLocalStorage('favoriteRecipes');
+    const inProgress = getLocalStorage('inProgressRecipes');
     if (!inProgress) {
       saveLocalStorage('inProgressRecipes', { drinks: {}, meals: {} });
       // saveLocalStorage('favoriteRecipes', []);
@@ -67,8 +67,7 @@ export default function CardDetails(recipeId) {
     if (!favoriteStorage) {
       saveLocalStorage('favoriteRecipes', []);
     }
-    favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
-    console.log(favoriteRecipes, 'Favoritos');
+    favoriteRecipes = getLocalStorage('favoriteRecipes');
     const includes = favoriteRecipes && favoriteRecipes.filter((recipe) => (
       recipe.id.includes(idSplit)));
     setFavorited(includes && includes.length === 1 ? blackHeartIcon : whiteHeartIcon);

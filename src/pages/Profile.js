@@ -1,23 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { getLocalStorage } from '../helpers/saveLocalStorage';
 
 export default function Profile() {
-  const [email, setEmail] = useState('');
   const history = useHistory();
+  const email = getLocalStorage('user');
 
   const userLogout = () => {
     history.push('/');
     localStorage.clear('user');
   };
-  useEffect(() => {
-    const emailLoc = getLocalStorage('user');
-    if (emailLoc) {
-      setEmail(emailLoc);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const emailLoc = getLocalStorage('user');
+  //   if (emailLoc) {
+  //     setEmail(emailLoc);
+  //   }
+  // }, []);
   return (
     <div>
       <Header
@@ -26,7 +26,7 @@ export default function Profile() {
       <p
         data-testid="profile-email"
       >
-        { email.email }
+        {email && email.email }
 
       </p>
       <button

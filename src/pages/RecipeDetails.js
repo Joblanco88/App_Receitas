@@ -95,6 +95,7 @@ export default function RecipeDetails({ match }) {
     };
     idFetchs();
   }, []);
+
   return (
     <div>
       <CardDetails

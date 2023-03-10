@@ -1,17 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
+import copy from 'clipboard-copy';
+import PropTypes from 'prop-types';
 import iconShare from '../images/shareIcon.svg';
-import iconFavorite from '../images/whiteHeartIcon.svg';
+import whiteHeartIcon from '../images/whiteHeartIcon.svg';
+import blackHeartIcon from '../images/blackHeartIcon.svg';
 import { idDrinkFetch, idMealFetch } from '../helpers/services/fetchAPI';
-import '../styles/RecipeInProgress.css';
 import { getLocalStorage, saveLocalStorage } from '../helpers/saveLocalStorage';
+import '../styles/RecipeInProgress.css';
 
 export default function RecipeInProgress() {
   const [recipeInProgress, setRecipeInProgress] = useState({
     ingredients: [], measures: [] });
-  // const [checked, setChecked] = useState({});
-  // const [className, setClassName] = useState({});
+  const [msgUrlCopied, setMsgUrlCopied] = useState(false);
+  const maxIngredients = {};
+  const [checked, setChecked] = useState(maxIngredients);
+  const [favorited, setFavorited] = useState(whiteHeartIcon);
+  recipeInProgress.ingredients
+    .forEach((ingredient, index) => { maxIngredients[index] = ''; });
   const history = useHistory();
   const { location: { pathname } } = history;
   // -> /drinks/id/in-progress -> ['', 'drinks', 'id', 'in-progress']
@@ -19,6 +25,8 @@ export default function RecipeInProgress() {
   const page = pathname.split('/')[1];
   const PARAM_INGREDIENT = /strIngredient\d+/;
   const PARAM_MEASURE = /strMeasure\d+/;
+  const SECONDS_TIMEOUT = 2000;
+  const URL = window.location.href;
 
   const filterKeys = (object, param) => {
     const chavesFiltradas = {};
@@ -70,10 +78,6 @@ export default function RecipeInProgress() {
     fetchAPI();
   }, []);
 
-  const onClickbutton = () => {
-    console.log('tste');
-  };
-
   const saveIngredients = (object, actualPage, value) => {
     if (object[actualPage][idSplit]) {
       object[actualPage][idSplit].push(value);
@@ -85,12 +89,20 @@ export default function RecipeInProgress() {
     });
   };
 
-  const onChangeChecked = (target) => {
+  const onChangeChecked = (target, index) => {
     const inProgressRecipes = getLocalStorage('inProgressRecipes');
     if (target.checked) {
-      target.parentElement.classList.add('checked');
+      // target.parentElement.classList.add('checked');
+      setChecked({
+        ...checked,
+        [index]: 'checked',
+      });
     } else {
-      target.parentElement.classList.remove('checked');
+      // target.parentElement.classList.remove('checked');
+      setChecked({
+        ...checked,
+        [index]: '',
+      });
     }
     saveIngredients(inProgressRecipes, page, target.value);
   };
@@ -100,7 +112,48 @@ export default function RecipeInProgress() {
     if (!inProgress) {
       saveLocalStorage('inProgressRecipes', { drinks: {}, meals: {} });
     }
-  }, []);
+    const isChecked = {};
+    recipeInProgress.ingredients.forEach((ingredient, index) => {
+      if (inProgress[page][idSplit]?.includes(ingredient)) {
+        console.log(ingredient, index);
+        console.log('Caí no IF');
+        isChecked[index] = 'checked';
+      }
+    });
+    setChecked({ ...checked, ...isChecked });
+  }, [recipeInProgress]);
+
+  const onClickFavorite = () => {
+    favoriteRecipes = getLocalStorage('favoriteRecipes');
+    const { name, image, instructions } = recipeInProgress;
+    const objFavorites = [...favoriteRecipes, {
+      id,
+      type,
+      nationality,
+      category: recipeInProgress.category,
+      alcoholicOrNot,
+      name,
+      image }];
+    const includes = favoriteRecipes.filter((recipe) => (
+      recipe.id.includes(idSplit)));
+    if (includes.length === 0) {
+      saveLocalStorage('favoriteRecipes', objFavorites);
+      setFavorited(blackHeartIcon);
+    } else {
+      const array = favoriteRecipes.filter((recipe) => (!recipe.id.includes(id)));
+      saveLocalStorage('favoriteRecipes', array);
+      setFavorited(whiteHeartIcon);
+    }
+  };
+
+  const onCLickShare = () => {
+    const urlInProgress = URL.replace('/in-progress', '');
+    copy(urlInProgress);
+    setMsgUrlCopied(true);
+    setTimeout(() => {
+      setMsgUrlCopied(false);
+    }, SECONDS_TIMEOUT);
+  };
 
   return (
     <div>
@@ -117,7 +170,7 @@ export default function RecipeInProgress() {
       />
       <button
         data-testid="share-btn"
-        onClick={ () => console.log('botao compartilhar') }
+        onClick={ () => onCLickShare() }
       >
         <img
           className="icons"
@@ -125,13 +178,14 @@ export default function RecipeInProgress() {
           alt="shareIcon"
         />
       </button>
+      {msgUrlCopied && <p>Link copied!</p>}
       <button
         data-testid="favorite-btn"
-        onClick={ () => console.log('botão favoritar') }
+        onClick={ () => onClickFavorite() }
       >
         <img
           className="icons"
-          src={ iconFavorite }
+          src={ whiteHeartIcon }
           alt="iconFavorite"
         />
       </button>
@@ -150,14 +204,14 @@ export default function RecipeInProgress() {
       {recipeInProgress.ingredients.map((ingredient, index) => (
         <label
           key={ index }
+          className={ checked[index] }
           data-testid={ `${index}-ingredient-step` }
         >
           <input
             type="checkbox"
             value={ ingredient }
-            onChange={ ({ target }) => onChangeChecked(target) }
-            // checked={ checked[index] }
-            // className={ className[index] }
+            onChange={ ({ target }) => onChangeChecked(target, index) }
+            checked={ checked[index] === 'checked' }
           />
           {`${ingredient} ${recipeInProgress.measures[index]
             ? recipeInProgress.measures[index] : ''}`}
