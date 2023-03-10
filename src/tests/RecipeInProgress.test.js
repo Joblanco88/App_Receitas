@@ -39,16 +39,7 @@ describe('Testando o Recipe In Progress', () => {
   });
   test('Testando Recipe in progress de meals no id 52977', async () => {
     const { history } = renderWithRouter(<App />);
-    const storage = [[{
-      id: '52977',
-      type: 'meal',
-      nationality: 'Turkish',
-      alcoholicOrNot: '',
-      category: 'Side',
-      image: 'https://www.themealdb.com/images/media/meals/58oia61564916529.jpg',
-      name: 'Corba',
-    }]];
-    const favorites = JSON.parse(localStorage.getItem('favoriteRecipes'));
+    // const favorites = JSON.parse(localStorage.getItem('favoriteRecipes'));
     // const setFavorites = jest.spyOn(window.localStorage, 'setItem');
     // const getFavorites = jest.spyOn(window.localStorage, 'getItem');
     act(() => {
