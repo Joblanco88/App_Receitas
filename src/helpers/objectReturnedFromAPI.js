@@ -55,3 +55,33 @@ export const objectRecipeId = (object, page, ingredients, measures) => {
   }
   return objectReturn;
 };
+
+export const objectDoneRecipe = (object, page) => {
+  let objectReturn = {};
+  if (page === 'meals') {
+    objectReturn = {
+      id: object.idMeal,
+      type: 'meal',
+      nationality: object.strArea,
+      alcoholicOrNot: '',
+      name: object.strMeal,
+      image: object.strMealThumb,
+      category: object.strCategory,
+      doneDate: new Date(),
+      tags: (object.strTags ? object.strTags.split(',') : []),
+    };
+  } else if (page === 'drinks') {
+    objectReturn = {
+      id: object.idDrink,
+      type: 'drink',
+      nationality: '',
+      alcoholicOrNot: object.strAlcoholic,
+      name: object.strDrink,
+      image: object.strDrinkThumb,
+      category: object.strCategory,
+      doneDate: new Date(),
+      tags: (object.strTags ? object.strTags.split(',') : []),
+    };
+  }
+  return objectReturn;
+};

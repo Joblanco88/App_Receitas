@@ -10,7 +10,7 @@ import { getLocalStorage, saveLocalStorage } from '../helpers/saveLocalStorage';
 import '../styles/RecipeInProgress.css';
 import RecipesContext from '../context/RecipesContext';
 import { createObjectDetails } from '../helpers/createObjectDetails';
-import { objectInProgress } from '../helpers/objectReturnedFromAPI';
+import { objectDoneRecipe, objectInProgress } from '../helpers/objectReturnedFromAPI';
 
 export default function RecipeInProgress() {
   const history = useHistory();
@@ -27,12 +27,14 @@ export default function RecipeInProgress() {
   const [recipeInProgress, setRecipeInProgress] = useState({
     ingredients: [], measures: [] });
   const [msgUrlCopied, setMsgUrlCopied] = useState(false);
-  const [checked, setChecked] = useState(maxIngredients);
+  const [disabled, setDisabled] = useState(true);
   const [favorited, setFavorited] = useState(whiteHeartIcon);
+  const [doneRecipe, setDoneRecipe] = useState([]);
   const { dataDetails, setDataDetails } = useContext(RecipesContext);
 
   recipeInProgress.ingredients
     .forEach((ingredient, index) => { maxIngredients[index] = ''; });
+  const [checked, setChecked] = useState(maxIngredients);
 
   const filterKeys = (object, param) => {
     const chavesFiltradas = {};
@@ -50,6 +52,7 @@ export default function RecipeInProgress() {
         const response = await idMealFetch(idSplit);
         const objectApi = response.meals[0];
         setDataDetails(createObjectDetails(objectApi, true));
+        setDoneRecipe(objectApi);
         const ingredients = filterKeys(objectApi, PARAM_INGREDIENT);
         const measures = filterKeys(objectApi, PARAM_MEASURE);
         setRecipeInProgress(objectInProgress(objectApi, page, ingredients, measures));
@@ -57,6 +60,7 @@ export default function RecipeInProgress() {
         const response = await idDrinkFetch(idSplit);
         const objectApi = response.drinks[0];
         setDataDetails(createObjectDetails(objectApi, false));
+        setDoneRecipe(objectApi);
         const ingredients = filterKeys(objectApi, PARAM_INGREDIENT);
         const measures = filterKeys(objectApi, PARAM_MEASURE);
         setRecipeInProgress(objectInProgress(objectApi, page, ingredients, measures));
@@ -78,33 +82,35 @@ export default function RecipeInProgress() {
 
   const onChangeChecked = (target, index) => {
     const inProgressRecipes = getLocalStorage('inProgressRecipes');
+    let object = {};
     if (target.checked) {
-      // target.parentElement.classList.add('checked');
-      setChecked({
-        ...checked,
-        [index]: 'checked',
-      });
+      if (Object.keys(checked).length === 0) {
+        object = { ...maxIngredients, [index]: 'checked' };
+      } else {
+        object = { ...checked, [index]: 'checked' };
+      }
+      setChecked(object);
     } else {
-      // target.parentElement.classList.remove('checked');
-      setChecked({
-        ...checked,
-        [index]: '',
-      });
+      if (Object.keys(checked).length === 0) {
+        object = { ...maxIngredients, [index]: '' };
+      } else {
+        object = { ...checked, [index]: '' };
+      }
+      setChecked(object);
     }
+    setDisabled(!Object.values(object).every((check) => check === 'checked'));
     saveIngredients(inProgressRecipes, page, target.value);
   };
 
   useEffect(() => {
     const favoriteStorage = getLocalStorage('favoriteRecipes');
     const inProgress = getLocalStorage('inProgressRecipes');
+    const doneStorage = getLocalStorage('doneRecipes');
     const isChecked = {};
 
-    if (!inProgress) {
-      saveLocalStorage('inProgressRecipes', { drinks: {}, meals: {} });
-    }
-    if (!favoriteStorage) {
-      saveLocalStorage('favoriteRecipes', []);
-    }
+    if (!inProgress) saveLocalStorage('inProgressRecipes', { drinks: {}, meals: {} });
+    if (!favoriteStorage) saveLocalStorage('favoriteRecipes', []);
+    if (!doneStorage) saveLocalStorage('doneRecipes', []);
 
     const includes = favoriteStorage && favoriteStorage.filter((recipe) => (
       recipe.id.includes(idSplit)));
@@ -148,6 +154,13 @@ export default function RecipeInProgress() {
     setTimeout(() => {
       setMsgUrlCopied(false);
     }, SECONDS_TIMEOUT);
+  };
+
+  const onClickbutton = () => {
+    const doneStorage = getLocalStorage('doneRecipes');
+    console.log(doneStorage);
+    saveLocalStorage('doneRecipes', [...doneStorage, objectDoneRecipe(doneRecipe, page)]);
+    history.push('/done-recipes');
   };
 
   return (
@@ -210,6 +223,7 @@ export default function RecipeInProgress() {
         data-testid="finish-recipe-btn"
         onClick={ () => onClickbutton() }
         className="finish-Recipe"
+        disabled={ disabled }
       >
         Finalizar receita
       </button>
