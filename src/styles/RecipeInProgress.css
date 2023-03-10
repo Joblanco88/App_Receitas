@@ -1,0 +1,9 @@
+.checked {
+  text-decoration: line-through solid black;
+}
+
+
+.finish-Recipe {
+  bottom: 0;
+  position: fixed;
+}

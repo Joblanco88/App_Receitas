@@ -65,8 +65,10 @@ export default function RecipeDetails({ match }) {
           thumb: objectApi.strMealThumb,
           title: objectApi.strMeal,
           category: objectApi.strCategory,
-          ingredient: Object.values(ingredients).filter((value) => value !== ''),
-          measure: Object.values(measures).filter((value) => value !== ''),
+          ingredient: Object.values(ingredients)
+            .filter((value) => value !== '' && value !== null),
+          measure: Object.values(measures)
+            .filter((value) => value !== '' && value !== null),
           instruction: objectApi.strInstructions,
           video: objectApi.strYoutube,
         };
@@ -83,7 +85,8 @@ export default function RecipeDetails({ match }) {
           category: objectApi.strAlcoholic,
           ingredient: Object.values(ingredients)
             .filter((value) => value !== '' && value !== null),
-          measure: Object.values(measures).filter((value) => value !== ''),
+          measure: Object.values(measures)
+            .filter((value) => value !== '' && value !== null),
           instruction: objectApi.strInstructions,
           video: objectApi.strVideo,
         };

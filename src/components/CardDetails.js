@@ -155,7 +155,7 @@ export default function CardDetails(recipeId) {
             data-testid={ `${index}-ingredient-name-and-measure` }
             key={ index }
           >
-            {`${el}-${measure[index]}`}
+            {`${el} ${measure[index] ? measure[index] : ''}`}
           </li>))}
       </ul>
       <p
