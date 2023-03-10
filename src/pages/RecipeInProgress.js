@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import copy from 'clipboard-copy';
 import PropTypes from 'prop-types';
@@ -8,18 +8,14 @@ import blackHeartIcon from '../images/blackHeartIcon.svg';
 import { idDrinkFetch, idMealFetch } from '../helpers/services/fetchAPI';
 import { getLocalStorage, saveLocalStorage } from '../helpers/saveLocalStorage';
 import '../styles/RecipeInProgress.css';
+import RecipesContext from '../context/RecipesContext';
+import { createObjectDetails } from '../helpers/createObjectDetails';
+import { objectInProgress } from '../helpers/objectReturnedFromAPI';
 
 export default function RecipeInProgress() {
-  const [recipeInProgress, setRecipeInProgress] = useState({
-    ingredients: [], measures: [] });
-  const [msgUrlCopied, setMsgUrlCopied] = useState(false);
-  const maxIngredients = {};
-  const [checked, setChecked] = useState(maxIngredients);
-  const [favorited, setFavorited] = useState(whiteHeartIcon);
-  recipeInProgress.ingredients
-    .forEach((ingredient, index) => { maxIngredients[index] = ''; });
   const history = useHistory();
   const { location: { pathname } } = history;
+  const maxIngredients = {};
   // -> /drinks/id/in-progress -> ['', 'drinks', 'id', 'in-progress']
   const idSplit = pathname.split('/')[2];
   const page = pathname.split('/')[1];
@@ -27,6 +23,16 @@ export default function RecipeInProgress() {
   const PARAM_MEASURE = /strMeasure\d+/;
   const SECONDS_TIMEOUT = 2000;
   const URL = window.location.href;
+
+  const [recipeInProgress, setRecipeInProgress] = useState({
+    ingredients: [], measures: [] });
+  const [msgUrlCopied, setMsgUrlCopied] = useState(false);
+  const [checked, setChecked] = useState(maxIngredients);
+  const [favorited, setFavorited] = useState(whiteHeartIcon);
+  const { dataDetails, setDataDetails } = useContext(RecipesContext);
+
+  recipeInProgress.ingredients
+    .forEach((ingredient, index) => { maxIngredients[index] = ''; });
 
   const filterKeys = (object, param) => {
     const chavesFiltradas = {};
@@ -43,36 +49,17 @@ export default function RecipeInProgress() {
       if (page === 'meals') {
         const response = await idMealFetch(idSplit);
         const objectApi = response.meals[0];
-        const { strMealThumb, strMeal, strInstructions, strCategory } = objectApi;
+        setDataDetails(createObjectDetails(objectApi, true));
         const ingredients = filterKeys(objectApi, PARAM_INGREDIENT);
         const measures = filterKeys(objectApi, PARAM_MEASURE);
-        setRecipeInProgress({
-          name: strMeal,
-          image: strMealThumb,
-          category: strCategory,
-          instructions: strInstructions,
-          ingredients: Object.values(ingredients)
-            .filter((value) => value !== '' && value !== null),
-          measures: Object.values(measures)
-            .filter((value) => value !== '' && value !== null),
-        });
+        setRecipeInProgress(objectInProgress(objectApi, page, ingredients, measures));
       } else if (page === 'drinks') {
         const response = await idDrinkFetch(idSplit);
         const objectApi = response.drinks[0];
-        console.log(objectApi);
-        const { strDrinkThumb, strDrink, strInstructions, strAlcoholic } = objectApi;
+        setDataDetails(createObjectDetails(objectApi, false));
         const ingredients = filterKeys(objectApi, PARAM_INGREDIENT);
         const measures = filterKeys(objectApi, PARAM_MEASURE);
-        setRecipeInProgress({
-          name: strDrink,
-          image: strDrinkThumb,
-          category: strAlcoholic,
-          instructions: strInstructions,
-          ingredients: Object.values(ingredients)
-            .filter((value) => value !== '' && value !== null),
-          measures: Object.values(measures)
-            .filter((value) => value !== '' && value !== null),
-        });
+        setRecipeInProgress(objectInProgress(objectApi, page, ingredients, measures));
       }
     };
     fetchAPI();
@@ -108,15 +95,23 @@ export default function RecipeInProgress() {
   };
 
   useEffect(() => {
+    const favoriteStorage = getLocalStorage('favoriteRecipes');
     const inProgress = getLocalStorage('inProgressRecipes');
+    const isChecked = {};
+
     if (!inProgress) {
       saveLocalStorage('inProgressRecipes', { drinks: {}, meals: {} });
     }
-    const isChecked = {};
+    if (!favoriteStorage) {
+      saveLocalStorage('favoriteRecipes', []);
+    }
+
+    const includes = favoriteStorage && favoriteStorage.filter((recipe) => (
+      recipe.id.includes(idSplit)));
+    setFavorited(includes && includes.length === 1 ? blackHeartIcon : whiteHeartIcon);
+
     recipeInProgress.ingredients.forEach((ingredient, index) => {
       if (inProgress[page][idSplit]?.includes(ingredient)) {
-        console.log(ingredient, index);
-        console.log('Caí no IF');
         isChecked[index] = 'checked';
       }
     });
@@ -124,13 +119,13 @@ export default function RecipeInProgress() {
   }, [recipeInProgress]);
 
   const onClickFavorite = () => {
-    favoriteRecipes = getLocalStorage('favoriteRecipes');
-    const { name, image, instructions } = recipeInProgress;
+    const favoriteRecipes = getLocalStorage('favoriteRecipes');
+    const { id, type, nationality, alcoholicOrNot, name, image } = dataDetails;
     const objFavorites = [...favoriteRecipes, {
       id,
       type,
       nationality,
-      category: recipeInProgress.category,
+      category: dataDetails.category,
       alcoholicOrNot,
       name,
       image }];
@@ -158,9 +153,7 @@ export default function RecipeInProgress() {
   return (
     <div>
       <h1>Recipe in progress</h1>
-      <h1
-        data-testid="recipe-title"
-      >
+      <h1 data-testid="recipe-title">
         { recipeInProgress.name }
       </h1>
       <img
@@ -179,19 +172,15 @@ export default function RecipeInProgress() {
         />
       </button>
       {msgUrlCopied && <p>Link copied!</p>}
-      <button
-        data-testid="favorite-btn"
-        onClick={ () => onClickFavorite() }
-      >
+      <button onClick={ () => onClickFavorite() }>
         <img
           className="icons"
-          src={ whiteHeartIcon }
+          data-testid="favorite-btn"
+          src={ favorited }
           alt="iconFavorite"
         />
       </button>
-      <p
-        data-testid="recipe-category"
-      >
+      <p data-testid="recipe-category">
         { recipeInProgress.category }
       </p>
       <p
@@ -223,8 +212,6 @@ export default function RecipeInProgress() {
         className="finish-Recipe"
       >
         Finalizar receita
-        {' '}
-
       </button>
     </div>
   );

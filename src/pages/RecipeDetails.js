@@ -4,6 +4,8 @@ import { idDrinkFetch, idMealFetch } from '../helpers/services/fetchAPI';
 import CardDetails from '../components/CardDetails';
 import Recomendation from '../components/Recomendation';
 import RecipesContext from '../context/RecipesContext';
+import { createObjectDetails } from '../helpers/createObjectDetails';
+import { objectRecipeId } from '../helpers/objectReturnedFromAPI';
 
 export default function RecipeDetails({ match }) {
   const { setDataDetails, recipeId, setRecipeId } = useContext(RecipesContext);
@@ -23,36 +25,6 @@ export default function RecipeDetails({ match }) {
     return chavesFiltradas;
   };
 
-  const createObjectDetails = (object, param) => {
-    if (param) {
-      const { strMeal, strArea, idMeal, strCategory, strMealThumb } = object;
-      const filteredObject = {
-        name: strMeal,
-        nationality: strArea,
-        id: idMeal,
-        category: strCategory,
-        image: strMealThumb,
-        type: 'meal',
-        alcoholicOrNot: '',
-      };
-      const result = { ...filteredObject };
-      return result;
-    }
-    const { strDrink, idDrink,
-      strCategory, strDrinkThumb, strAlcoholic } = object;
-    const filteredObject = {
-      name: strDrink,
-      nationality: '',
-      id: idDrink,
-      category: strCategory,
-      image: strDrinkThumb,
-      type: 'drink',
-      alcoholicOrNot: strAlcoholic,
-    };
-    const result = { ...filteredObject };
-    return result;
-  };
-
   useEffect(() => {
     const idFetchs = async () => {
       if (path === '/meals/:id') {
@@ -61,36 +33,14 @@ export default function RecipeDetails({ match }) {
         setDataDetails(createObjectDetails(objectApi, true));
         const ingredients = filterKeys(objectApi, PARAM_INGREDIENT);
         const measures = filterKeys(objectApi, PARAM_MEASURE);
-        const object = {
-          thumb: objectApi.strMealThumb,
-          title: objectApi.strMeal,
-          category: objectApi.strCategory,
-          ingredient: Object.values(ingredients)
-            .filter((value) => value !== '' && value !== null),
-          measure: Object.values(measures)
-            .filter((value) => value !== '' && value !== null),
-          instruction: objectApi.strInstructions,
-          video: objectApi.strYoutube,
-        };
-        setRecipeId(object);
+        setRecipeId(objectRecipeId(objectApi, path, ingredients, measures));
       } else if (path === '/drinks/:id') {
         const response = await idDrinkFetch(id);
         const objectApi = response.drinks[0];
         setDataDetails(createObjectDetails(objectApi, false));
         const ingredients = filterKeys(objectApi, PARAM_INGREDIENT);
         const measures = filterKeys(objectApi, PARAM_MEASURE);
-        const object = {
-          thumb: objectApi.strDrinkThumb,
-          title: objectApi.strDrink,
-          category: objectApi.strAlcoholic,
-          ingredient: Object.values(ingredients)
-            .filter((value) => value !== '' && value !== null),
-          measure: Object.values(measures)
-            .filter((value) => value !== '' && value !== null),
-          instruction: objectApi.strInstructions,
-          video: objectApi.strVideo,
-        };
-        setRecipeId(object);
+        setRecipeId(objectRecipeId(objectApi, path, ingredients, measures));
       }
     };
     idFetchs();

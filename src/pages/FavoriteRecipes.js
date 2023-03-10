@@ -1,39 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
+import copy from 'clipboard-copy';
 import Header from '../components/Header';
+import iconShare from '../images/shareIcon.svg';
 
 export default function FavoriteRecipes() {
   const SECONDS_TIMEOUT = 2000;
-
-  const onClickFavorite = () => {
-    favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
-    const { id, type, nationality, alcoholicOrNot, name, image } = dataDetails;
-    const objFavorites = [...favoriteRecipes, {
-      id,
-      type,
-      nationality,
-      category: dataDetails.category,
-      alcoholicOrNot,
-      name,
-      image }];
-    const includes = favoriteRecipes.filter((recipe) => (
-      recipe.id.includes(idSplit)));
-    if (includes.length === 0) {
-      saveLocalStorage('favoriteRecipes', objFavorites);
-      setFavorited(blackHeartIcon);
-    } else {
-      const array = favoriteRecipes.filter((recipe) => (!recipe.id.includes(id)));
-      saveLocalStorage('favoriteRecipes', array);
-      setFavorited(whiteHeartIcon);
-    }
-  };
+  const URL = window.location.href;
+  const [msgUrlCopied, setMsgUrlCopied] = useState(false);
 
   const onCLickShare = () => {
-    copy(URL);
+    const urlInProgress = URL.replace('/favorite-recipes', '');
+    copy(urlInProgress);
     setMsgUrlCopied(true);
     setTimeout(() => {
       setMsgUrlCopied(false);
     }, SECONDS_TIMEOUT);
   };
+
   return (
     <div>
       <Header
@@ -58,6 +41,17 @@ export default function FavoriteRecipes() {
       >
         Drinks
       </button>
+      <button
+        data-testid="share-btn"
+        onClick={ () => onCLickShare() }
+      >
+        <img
+          className="icons"
+          src={ iconShare }
+          alt="shareIcon"
+        />
+      </button>
+      {msgUrlCopied && <p>Link copied!</p>}
     </div>
   );
 }
