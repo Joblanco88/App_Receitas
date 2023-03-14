@@ -1,0 +1,21 @@
+.profile {
+  height: 100vh;
+}
+
+.profilebuttons {
+  display: flex;
+  flex-direction: column;
+  height: 50vh;
+  justify-content: space-around;
+  margin: 70px 20px 0;
+}
+
+.profilebuttons button {
+  height: 50px;
+}
+
+.profileuser {
+  font-size: 20px;
+  font-weight: 700;
+  margin-top: 80px;
+}

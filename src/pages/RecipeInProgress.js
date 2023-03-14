@@ -164,7 +164,7 @@ export default function RecipeInProgress() {
   };
 
   return (
-    <div>
+    <div className="inprogress">
       <h1>Recipe in progress</h1>
       <h1 data-testid="recipe-title">
         { recipeInProgress.name }
@@ -172,57 +172,63 @@ export default function RecipeInProgress() {
       <img
         data-testid="recipe-photo"
         src={ recipeInProgress.image }
+        className="inprogressimg"
         alt="imageRecipe"
       />
-      <button
-        data-testid="share-btn"
-        onClick={ () => onCLickShare() }
-      >
-        <img
-          className="icons"
-          src={ iconShare }
-          alt="shareIcon"
-        />
-      </button>
-      {msgUrlCopied && <p>Link copied!</p>}
-      <button onClick={ () => onClickFavorite() }>
-        <img
-          className="icons"
-          data-testid="favorite-btn"
-          src={ favorited }
-          alt="iconFavorite"
-        />
-      </button>
+      <div className="containerIcons">
+        <button onClick={ () => onClickFavorite() }>
+          <img
+            className="inProgressIcons"
+            data-testid="favorite-btn"
+            src={ favorited }
+            alt="iconFavorite"
+          />
+        </button>
+        <button
+          data-testid="share-btn"
+          onClick={ () => onCLickShare() }
+        >
+          <img
+            className="inProgressIcons"
+            src={ iconShare }
+            alt="shareIcon"
+          />
+        </button>
+        {msgUrlCopied && <p>Link copied!</p>}
+      </div>
       <p data-testid="recipe-category">
         { recipeInProgress.category }
       </p>
       <p
+        className="inprogressinstructions"
         data-testid="instructions"
       >
-        Modo de preparo:
+        <strong>Modo de preparo:</strong>
         <br />
         {`${recipeInProgress.instructions}`}
       </p>
-      {recipeInProgress.ingredients.map((ingredient, index) => (
-        <label
-          key={ index }
-          className={ checked[index] }
-          data-testid={ `${index}-ingredient-step` }
-        >
-          <input
-            type="checkbox"
-            value={ ingredient }
-            onChange={ ({ target }) => onChangeChecked(target, index) }
-            checked={ checked[index] === 'checked' }
-          />
-          {`${ingredient} ${recipeInProgress.measures[index]
-            ? recipeInProgress.measures[index] : ''}`}
-        </label>
-      ))}
+      <div className="ingredients-input">
+        {recipeInProgress.ingredients.map((ingredient, index) => (
+          <label
+            key={ index }
+            className={ checked[index] }
+            data-testid={ `${index}-ingredient-step` }
+          >
+            <input
+              type="checkbox"
+              value={ ingredient }
+              onChange={ ({ target }) => onChangeChecked(target, index) }
+              checked={ checked[index] === 'checked' }
+            />
+            {`${ingredient} ${recipeInProgress.measures[index]
+              ? recipeInProgress.measures[index] : ''}`}
+          </label>
+        ))}
+      </div>
       <button
         data-testid="finish-recipe-btn"
         onClick={ () => onClickbutton() }
-        className="finish-Recipe"
+        className="finish-Recipe buttonFilters"
         disabled={ disabled }
       >
         Finalizar receita

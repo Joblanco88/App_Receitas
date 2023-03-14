@@ -27,30 +27,35 @@ export default function DoneRecipes() {
       <Header
         title="Done Recipes"
       />
-      <button
-        type="button"
-        data-testid="filter-by-all-btn"
-        onClick={ () => {
-          const doneRecipes = getLocalStorage('doneRecipes');
-          setRecipes(doneRecipes);
-        } }
-      >
-        All
-      </button>
-      <button
-        type="button"
-        data-testid="filter-by-meal-btn"
-        onClick={ () => filterRecipe('meal') }
-      >
-        Meals
-      </button>
-      <button
-        type="button"
-        data-testid="filter-by-drink-btn"
-        onClick={ () => filterRecipe('drink') }
-      >
-        Drinks
-      </button>
+      <div className="donerecipesbuttons">
+        <button
+          type="button"
+          className="buttonFilters"
+          data-testid="filter-by-all-btn"
+          onClick={ () => {
+            const doneRecipes = getLocalStorage('doneRecipes');
+            setRecipes(doneRecipes);
+          } }
+        >
+          All
+        </button>
+        <button
+          type="button"
+          className="buttonFilters"
+          data-testid="filter-by-meal-btn"
+          onClick={ () => filterRecipe('meal') }
+        >
+          Meals
+        </button>
+        <button
+          type="button"
+          className="buttonFilters"
+          data-testid="filter-by-drink-btn"
+          onClick={ () => filterRecipe('drink') }
+        >
+          Drinks
+        </button>
+      </div>
       <CardDoneRecipes done={ recipes } />
     </div>
   );

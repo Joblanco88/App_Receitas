@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import '../styles/Login.css';
+import logo from '../images/logo.svg';
+import loginBackground from '../images/loginBackground.png';
 import { saveLocalStorage } from '../helpers/saveLocalStorage';
 
 export default function Login() {
@@ -17,9 +20,20 @@ export default function Login() {
   const disable = (isEmailValid && isPasswordValid);
 
   return (
-    <div>
+    <div className="login">
+      <img
+        src={ loginBackground }
+        alt="loginBackground"
+        className="loginBackground"
+      />
+      <img
+        src={ logo }
+        alt="logoApp"
+        className="logoImage"
+      />
       <h1>Login</h1>
       <input
+        className="input-login"
         type="text"
         placeholder="Digite seu e-mail"
         value={ email }
@@ -28,6 +42,7 @@ export default function Login() {
         data-testid="email-input"
       />
       <input
+        className="input-login"
         type="password"
         placeholder="Digite sua senha"
         value={ password }
@@ -36,6 +51,7 @@ export default function Login() {
         data-testid="password-input"
       />
       <button
+        className="button"
         type="button"
         data-testid="login-submit-btn"
         onClick={ () => {
@@ -50,5 +66,6 @@ export default function Login() {
         Enter
       </button>
     </div>
+
   );
 }

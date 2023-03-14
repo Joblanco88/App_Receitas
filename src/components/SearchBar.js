@@ -6,6 +6,7 @@ import {
   nameMealsFetch, nameDrinksFetch,
 } from '../helpers/services/fetchAPI';
 import RecipesContext from '../context/RecipesContext';
+import '../styles/SearchBar.css';
 
 export default function SearchBar(pageTitle) {
   const [filter, setFilter] = useState('');
@@ -71,7 +72,7 @@ export default function SearchBar(pageTitle) {
   };
 
   return (
-    <div>
+    <div className="searchbar">
       <input
         type="text"
         data-testid="search-input"
@@ -79,51 +80,55 @@ export default function SearchBar(pageTitle) {
         value={ search }
         onChange={ ({ target }) => setSearch(target.value) }
       />
+      <div>
+        <label
+          htmlFor="ingredient-search-radio"
+        >
+          <input
+            className="searchbarradio"
+            name="radio"
+            type="radio"
+            data-testid="ingredient-search-radio"
+            id="ingredient-search-radio"
+            value="ingredient"
+            onChange={ ({ target }) => setFilter(target.value) }
+          />
+          Ingredient
+        </label>
 
-      <label
-        htmlFor="ingredient-search-radio"
-      >
-        <input
-          name="radio"
-          type="radio"
-          data-testid="ingredient-search-radio"
-          id="ingredient-search-radio"
-          value="ingredient"
-          onChange={ ({ target }) => setFilter(target.value) }
-        />
-        Ingredient
-      </label>
+        <label
+          htmlFor="name-search-radio"
+        >
+          <input
+            className="searchbarradio"
+            name="radio"
+            type="radio"
+            data-testid="name-search-radio"
+            id="name-search-radio"
+            value="name"
+            onChange={ ({ target }) => setFilter(target.value) }
+          />
+          Name
+        </label>
 
-      <label
-        htmlFor="name-search-radio"
-      >
-        <input
-          name="radio"
-          type="radio"
-          data-testid="name-search-radio"
-          id="name-search-radio"
-          value="name"
-          onChange={ ({ target }) => setFilter(target.value) }
-        />
-        Name
-      </label>
-
-      <label
-        htmlFor="first-letter-search-radio"
-      >
-        <input
-          name="radio"
-          type="radio"
-          data-testid="first-letter-search-radio"
-          id="first-letter-search-radio"
-          value="letter"
-          onChange={ ({ target }) => setFilter(target.value) }
-        />
-        First letter
-      </label>
-
+        <label
+          htmlFor="first-letter-search-radio"
+        >
+          <input
+            className="searchbarradio"
+            name="radio"
+            type="radio"
+            data-testid="first-letter-search-radio"
+            id="first-letter-search-radio"
+            value="letter"
+            onChange={ ({ target }) => setFilter(target.value) }
+          />
+          First letter
+        </label>
+      </div>
       <input
         type="button"
+        className="searchbarbutton"
         data-testid="exec-search-btn"
         value="Search"
         onClick={ () => searchHandler(filter, search, pageTitle) }

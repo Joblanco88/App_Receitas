@@ -1,13 +1,16 @@
 .imageCarousel {
   display: flex;
-  height: 300px;
+  height: 250px;
   margin-bottom: 50px;
+  margin-top: 10px;
   overflow-x: scroll;
   overflow-y: hidden;
   white-space: nowrap;
   width: 200px;
 }
 
-img {
+.imageCarousel img {
+  border: 1.5px solid orange;
+  border-radius: 10px;
   width: 200px;
 }
