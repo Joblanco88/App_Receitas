@@ -1,15 +1,92 @@
 .buttonStartRecipe {
+  background: transparent;
+  border-radius: 7px;
   bottom: 0;
+  box-shadow: inset 2px 2px 2px 0
+    rgba(255, 255, 255, 0.5) , 7px
+    7px 20px 0 rgba(0, 0, 0, 0.1) , 4px 4px 5px 0 rgba(0, 0, 0, 0.1);
+  color: white;
+  cursor: pointer;
+  height: 30px;
+  outline: none;
+  padding: 5px;
   position: fixed;
+  transition: all 0.3s ease;
+  width: 40%;
+}
+
+.buttonStartRecipe {
+  background: linear-gradient(0deg, rgba(6, 14, 131, 1) 0%, rgba(12, 25, 180, 1) 100%);
+  border: none;
+}
+
+.buttonStartRecipe:hover {
+  background: linear-gradient(0deg, rgba(0, 3, 255, 1) 0%, rgba(2, 126, 251, 1) 100%);
+}
+
+
+.details {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.details iframe {
+  border: none;
+  overflow: hidden;
+  width: 100%;
 }
 
 .containerIcons {
   display: flex;
-  flex-direction: column;
-  width: 50px;
+  width: 100%;
 }
 
 .icons {
-  height: 20px;
-  width: 20px;
+  height: 25px;
+  padding: 4px;
+  width: 25px;
+}
+
+.recipeCategory {
+  color: #fcc436;
+  font-size: 25px;
+  font-weight: 700;
+}
+
+.titleCardDetails {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.instructions {
+  border: 1px solid black;
+  border-radius: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
+  padding: 5px;
+  width: 95%;
+  word-wrap: break-word;
+}
+
+p {
+  text-align: center;
+}
+
+.details img {
+  border-radius: 10px;
+}
+
+ul {
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 8px;
+  width: 90%;
+}
+
+ul li {
+  list-style: none;
 }

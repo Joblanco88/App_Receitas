@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import RecipesContext from '../context/RecipesContext';
+import '../styles/CardRecipe.css';
 
 export default function CardRecipe() {
   const { recipes } = useContext(RecipesContext);
@@ -9,7 +10,7 @@ export default function CardRecipe() {
   const mealsSlice = recipes.meals && recipes.meals.slice(0, MAX_RECIPES);
   const drinksSlice = recipes.drinks && recipes.drinks.slice(0, MAX_RECIPES);
   return (
-    <div>
+    <div className="cardrecipe">
       {Object.keys(recipes)[0] === 'meals'
         ? mealsSlice?.map((recipe, index) => (
           <Link
@@ -38,7 +39,12 @@ export default function CardRecipe() {
               data-testid={ `${index}-recipe-card` }
               className="card"
             >
-              <span data-testid={ `${index}-card-name` }>{recipe.strDrink}</span>
+              <span
+                data-testid={ `${index}-card-name` }
+              >
+                {recipe.strDrink}
+
+              </span>
               <img
                 src={ recipe.strDrinkThumb }
                 alt={ index }

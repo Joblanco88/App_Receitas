@@ -1,0 +1,28 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.card img {
+  border-radius: 10px;
+  width: 280px;
+}
+
+span {
+  color: black;
+  font-weight: 700;
+}
+
+a, a:hover, a:active, a:visited {
+  text-decoration: none;
+}
+
+a span {
+  text-decoration: none;
+}
+
+.cardrecipe a:last-child {
+  margin-bottom: 50px;
+}

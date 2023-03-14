@@ -105,7 +105,7 @@ export default function CardDetails(recipeId) {
   };
 
   return (
-    <div>
+    <div className="details">
       <h1
         data-testid="recipe-title"
       >
@@ -144,9 +144,15 @@ export default function CardDetails(recipeId) {
       </div>
       {msgUrlCopied && <p>Link copied!</p>}
       <p
+        className="recipeCategory"
         data-testid="recipe-category"
       >
         {category}
+      </p>
+      <p
+        className="titleCardDetails"
+      >
+        Ingredients
       </p>
       <ul>
         {ingredient.map((el, index) => (
@@ -160,19 +166,26 @@ export default function CardDetails(recipeId) {
       <p
         data-testid="instructions"
       >
-        Modo de preparo:
+        <p
+          className="titleCardDetails"
+        >
+          Instructions
+
+        </p>
         <br />
-        {`${instruction}`}
+        <p
+          className="instructions"
+        >
+          {`${instruction}`}
+        </p>
       </p>
-      <div>
-        <iframe
-          title="video"
-          data-testid="video"
-          width="420"
-          height="345"
-          src={ video }
-        />
-      </div>
+      <iframe
+        title="video"
+        data-testid="video"
+        width="420"
+        height="345"
+        src={ video }
+      />
       <button
         className="buttonStartRecipe"
         type="button"

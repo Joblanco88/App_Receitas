@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import copy from 'clipboard-copy';
 import iconShare from '../images/shareIcon.svg';
+import '../styles/DoneRecipes.css';
 
 export default function CardDoneRecipes(recipes) {
   const SECONDS_TIMEOUT = 2000;
@@ -22,11 +23,15 @@ export default function CardDoneRecipes(recipes) {
     }, SECONDS_TIMEOUT);
   };
   return (
-    <div>
+    <div className="donerecipes">
       {done?.map((recipe, index) => (
-        <div key={ index }>
+        <div
+          className="carddonerecipes"
+          key={ index }
+        >
           <img
             data-testid={ `${index}-horizontal-image` }
+            className="donerecipesimage"
             src={ recipe.image }
             alt={ index }
           />

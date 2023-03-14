@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
+import '../styles/Filters.css';
 import {
   categoriesDrinksFetch,
   categoriesMealsFetch,
@@ -75,8 +76,11 @@ export default function Filters({ title }) {
   };
 
   return (
-    <div>
+    <div
+      className="containerFilters"
+    >
       <button
+        className="buttonFilters"
         data-testid="All-category-filter"
         onClick={ () => {
           setToggleCategory(false);
@@ -89,6 +93,7 @@ export default function Filters({ title }) {
       {fetchCategories.map((category) => (
         // devem ser exibidas apenas as 5 primeiras categorias retornadas da API.
         <button
+          className="buttonFilters"
           key={ category.strCategory }
           data-testid={ `${category.strCategory}-category-filter` }
           onClick={ () => filterResultAPI(category.strCategory, title) }

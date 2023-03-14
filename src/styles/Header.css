@@ -1,0 +1,33 @@
+.header {
+  align-items: center;
+  background-color: #fcc436;
+  display: flex;
+  height: 8vh;
+}
+
+.iconeRecipes {
+
+  /* margin-left: 20px;
+  margin-top: 20px; */
+  width: 45px;
+}
+
+.titleFoodType {
+  color: white;
+}
+
+.containerInputs {
+  display: flex;
+  gap: 8px;
+
+  /* justify-content: space-between; */
+
+}
+
+.inputProfile {
+  filter: invert(50%) sepia(100%) hue-rotate(200deg) brightness(1%);
+}
+
+.inputSearch {
+  filter: invert(50%) sepia(100%) hue-rotate(200deg) brightness(1%);
+}

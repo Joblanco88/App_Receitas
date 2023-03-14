@@ -1,0 +1,29 @@
+.donerecipes {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.donerecipesimage {
+  border-radius: 10px;
+  margin-top: 10px;
+  width: 280px;
+}
+
+.donerecipesbuttons {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.carddonerecipes {
+  border: 1px solid black;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 4px;
+  padding: 3px;
+}
